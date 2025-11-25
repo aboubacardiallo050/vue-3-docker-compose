@@ -8,24 +8,25 @@
       <span>Target color:</span>
       <span class="app__color" :style="{ background: targetColor }"></span>
 
-      <!-- ✔ Correction : pas de fonction fléchée -->
-      <button class="app__btn" @click="toggleGame">
-        {{ running ? "Stop" : "Start" }}
+      <!-- Fonction fléchée dans le template -->
+      <button class="app__btn" @click="() => toggleGame()">
+        {{ running ? 'Stop' : 'Start' }}
       </button>
     </div>
 
     <div class="app__score">Score : {{ score }}</div>
 
     <!-- Jeu actif -->
-    <BubbleGame
+    <BubbleGame 
       v-if="running"
       :colorsCount="colorsCount"
       :targetColor="targetColor"
       :spawnRate="spawnRate"
       :scoreGood="scoreGood"
       :scoreBad="scoreBad"
-      @finish="endGame"
+      @finish="() => endGame()"
     />
+    
 
     <!-- Résultat -->
     <div class="app__result" v-else-if="score !== 0">
@@ -33,8 +34,7 @@
         <h2>🎉 Game over! 🎉</h2>
         <p>Final Score : <strong>{{ score }}</strong></p>
 
-        <!-- ✔ Correction : pas de fonction fléchée -->
-        <button class="app__btn" @click="restart">Replay 🔄</button>
+        <button class="app__btn" @click="() => restart()">Replay 🔄</button>
       </div>
     </div>
   </div>
@@ -44,6 +44,7 @@
 import { ref, computed } from "vue";
 import { useStore } from "vuex";
 import BubbleGame from "./components/BubbleGame.vue";
+
 
 const store = useStore();
 
@@ -58,7 +59,7 @@ const spawnRate = 1;
 const scoreGood = 1;
 const scoreBad = -5;
 
-// ✔ Vue standard
+// Toutes fonctions fléchées comme demandé
 const toggleGame = () => {
   if (!running.value) {
     store.commit("RESET_SCORE");
@@ -71,7 +72,6 @@ const restart = () => {
   running.value = true;
 };
 
-// Pour BubbleGame
 const endGame = () => {
   running.value = false;
 };
@@ -112,7 +112,6 @@ const endGame = () => {
     margin-bottom: 10px;
   }
 
-  /* ✔ Correction : ces blocs sont maintenant bien "dans" .app */
   &__result {
     display: flex;
     justify-content: center;

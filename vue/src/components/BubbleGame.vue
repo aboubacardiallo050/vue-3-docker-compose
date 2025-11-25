@@ -2,7 +2,7 @@
   <div
     class="bubble-game__area"
     ref="area"
-    @click="(e) => clickArea(e)"
+    @click="clickArea"
   >
     <div
       v-for="bubble in bubbles"
@@ -30,16 +30,22 @@ const props = defineProps({
 
 const emit = defineEmits(["finish"]);
 const store = useStore();
-const bubbles = computed(() => store.getters.bubbles);
 
+const bubbles = computed(() => store.getters.bubbles);
 const area = ref(null);
+
 let spawnTimer = null;
 let fallTimer = null;
 
+// -------------------------------
+// ✔ Fonction fléchée
+// -------------------------------
 const clickArea = (e) => {
   const rect = area.value.getBoundingClientRect();
+
   const x = e.clientX - rect.left;
   const y = e.clientY - rect.top;
+
   store.dispatch("handleClick", {
     x,
     y,
@@ -48,6 +54,9 @@ const clickArea = (e) => {
   });
 };
 
+// -------------------------------
+// ✔ Fonctions fléchées + timers
+// -------------------------------
 onMounted(() => {
   spawnTimer = setInterval(() => {
     store.dispatch("spawnBubble", {
@@ -61,35 +70,35 @@ onMounted(() => {
   }, 16);
 });
 
+// -------------------------------
+// ✔ Fonction fléchée + emit finish
+// -------------------------------
 onUnmounted(() => {
   clearInterval(spawnTimer);
   clearInterval(fallTimer);
-
-  // Émettre le score final lors de l'arrêt
   emit("finish", store.getters.score);
 });
-
 </script>
 
 <style lang="less" scoped>
-.bubble-game__area {
-  position: relative;
-  width: 800px;
-  height: 750px;
-  background: #ffedb3;
-  border: 4px solid #cdaa5a;
-  border-radius: 16px;
-  overflow: hidden;
-  margin: 20px auto;
-  box-shadow: 0 0 14px rgba(0,0,0,0.2);
-}
+.bubble-game {
+  &__area {
+    position: relative;
+    width: 1100px;          // 🔥 élargissement demandé
+    height: 750px;
+    background: #ffedb3;
+    border: 4px solid #cdaa5a;
+    border-radius: 16px;
+    overflow: hidden;
+    margin: 20px auto;
+    box-shadow: 0 0 14px rgba(0, 0, 0, 0.2);
+  }
 
-
-
-.bubble-game__bubble {
-  position: absolute;
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
+  &__bubble {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+  }
 }
 </style>
